@@ -12,13 +12,6 @@ const {
 const checkMillionDollarIdea = require("./checkMillionDollarIdea");
 
 /*
-    Schema:
-    - Idea
-        - id: string
-        - name: string
-        - description: string
-        - numWeeks: number
-        - weeklyRevenue: number
 
     - `/api/ideas`
     - GET /api/ideas to get an array of all ideas.

@@ -1,3 +1,6 @@
+// Don't need a GET for individual meetings
+// Meetings aren't updated, so no PUT endpoint
+// Don't need a :meetingId param
 const express = require("express");
 const meetingsRouter = express.Router();
 
@@ -7,20 +10,6 @@ const {
     addToDatabase,
     deleteAllFromDatabase,
 } = require("./db");
-
-/*
-    Schema:
-    - Meeting
-        - time: string
-        - date: JS `Date` object
-        - day: string
-        - note: string
-
-    - `/api/meetings`
-    - GET /api/meetings  to get an array of all meetings.
-    - POST /api/meetings to create a new meeting and save it to the database.
-    - DELETE /api/meetings to delete _all_ meetings from the database.
-*/
 
 meetingsRouter.get("/", (req, res, next) => {
     res.send(getAllFromDatabase("meetings"));

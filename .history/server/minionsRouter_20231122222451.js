@@ -132,18 +132,15 @@ minionsRouter.post("/:minionId/work", (req, res, next) => {
 });
 
 minionsRouter.put("/:minionId/work/:workId", (req, res, next) => {
-    if (req.params.minionId !== req.body.minionId) {
-        return res.sendStatus(400);
-    }
-
     let updatedWork = { ...req.work, ...req.body };
     let updatedWorkInstance = updateInstanceInDatabase("work", updatedWork);
 
-    if (updatedWorkInstance) {
-        res.send(updatedWorkInstance);
-    } else {
-        return res.status(400).send("Problem updating minion's work");
-    }
+    if (req.params.minionId !== req.body.minionId)
+        if (updatedWorkInstance) {
+            res.send(updatedWorkInstance);
+        } else {
+            return res.status(400).send("Bad Request");
+        }
 });
 
 minionsRouter.delete("/:minionId/work/:workId", (req, res, next) => {

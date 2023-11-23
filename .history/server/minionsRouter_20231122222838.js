@@ -142,7 +142,7 @@ minionsRouter.put("/:minionId/work/:workId", (req, res, next) => {
     if (updatedWorkInstance) {
         res.send(updatedWorkInstance);
     } else {
-        return res.status(400).send("Problem updating minion's work");
+        return res.status(400).send("Bad Request");
     }
 });
 

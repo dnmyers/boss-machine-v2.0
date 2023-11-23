@@ -107,7 +107,7 @@ minionsRouter.param("workId", (req, res, next, id) => {
         req.work = work;
         next();
     } else {
-        return res.status(404).send("Work not found");
+        return res.sendStatus(404);
     }
 });
 
@@ -120,29 +120,28 @@ minionsRouter.get("/:minionId/work", (req, res, next) => {
     if (minionsWork) {
         res.status(200).send(minionsWork);
     } else {
-        res.status(404).send("Problem finding minion's work");
+        res.sendStatus(404);
     }
 });
 
 minionsRouter.post("/:minionId/work", (req, res, next) => {
-    let newWork = req.body;
-    newWork.minionId = req.params.minionId;
-    let addedWork = addToDatabase("work", newWork);
-    res.status(201).send(addedWork);
+    let addedWork = addToDatabase("work", req.body);
+
+    if (addedWork) {
+        res.status(201).send(addedWork);
+    } else {
+        res.status(400).send("Error while creating work");
+    }
 });
 
 minionsRouter.put("/:minionId/work/:workId", (req, res, next) => {
-    if (req.params.minionId !== req.body.minionId) {
-        return res.sendStatus(400);
-    }
-
     let updatedWork = { ...req.work, ...req.body };
     let updatedWorkInstance = updateInstanceInDatabase("work", updatedWork);
 
     if (updatedWorkInstance) {
         res.send(updatedWorkInstance);
     } else {
-        return res.status(400).send("Problem updating minion's work");
+        return res.status(404).send("Error while updating work");
     }
 });
 

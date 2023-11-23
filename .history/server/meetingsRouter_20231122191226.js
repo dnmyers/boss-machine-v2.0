@@ -1,3 +1,4 @@
+// Meetings aren't updated, so no put endpoint
 const express = require("express");
 const meetingsRouter = express.Router();
 
@@ -8,19 +9,15 @@ const {
     deleteAllFromDatabase,
 } = require("./db");
 
-/*
-    Schema:
-    - Meeting
-        - time: string
-        - date: JS `Date` object
-        - day: string
-        - note: string
-
-    - `/api/meetings`
-    - GET /api/meetings  to get an array of all meetings.
-    - POST /api/meetings to create a new meeting and save it to the database.
-    - DELETE /api/meetings to delete _all_ meetings from the database.
-*/
+meetingsRouter.use("/:meetingId", (req, res, next, id) => {
+    const meeting = getFromDatabaseById("meetings", id);
+    if (meeting) {
+        req.meeting = meeting;
+        next();
+    } else {
+        return res.sendStatus(404);
+    }
+});
 
 meetingsRouter.get("/", (req, res, next) => {
     res.send(getAllFromDatabase("meetings"));
@@ -35,7 +32,11 @@ meetingsRouter.post("/", (req, res, next) => {
     }
 });
 
-// Delete ALL meetings from the database
+meetingsRouter.get("/:meetingId", (req, res, next) => {
+    res.send(req.meeting);
+});
+
+// Delete ALL meetings
 meetingsRouter.delete("/", (req, res, next) => {
     const deleted = deleteAllFromDatabase("meetings");
     if (deleted) {

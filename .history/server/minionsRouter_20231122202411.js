@@ -1,8 +1,8 @@
 const express = require("express");
 const minionsRouter = express.Router();
 
-// const workRouter = require("./workRouter");
-// minionsRouter.use("/work", workRouter);
+const workRouter = require("./workRouter");
+minionsRouter.use("/work", workRouter);
 
 const {
     getAllFromDatabase,
@@ -18,29 +18,13 @@ minionsRouter.param("minionId", (req, res, next, id) => {
         req.minion = minion;
         next();
     } else {
-        res.sendStatus(404);
+        res.status(404).send();
     }
 });
 
 /************************************\
  *          /api/minions            *
 \************************************/
-
-/*
-    Scheme:
-    - Minion:
-        - id: string
-        - name: string
-        - title: string
-        - salary: number
-
-    - `/api/minions`
-    - GET /api/minions to get an array of all minions.
-    - POST /api/minions to create a new minion and save it to the database.
-    - GET /api/minions/:minionId to get a single minion by id.
-    - PUT /api/minions/:minionId to update a single minion by id.
-    - DELETE /api/minions/:minionId to delete a single minion by id.
-*/
 
 minionsRouter.get("/", (req, res, next) => {
     res.send(getAllFromDatabase("minions"));
@@ -49,6 +33,7 @@ minionsRouter.get("/", (req, res, next) => {
 minionsRouter.post("/", (req, res, next) => {
     let newMinion = addToDatabase("minions", req.body);
     if (newMinion) {
+        1;
         res.status(201).send(newMinion);
     } else {
         res.sendStatus(400);
@@ -87,12 +72,13 @@ minionsRouter.delete("/:minionId", (req, res, next) => {
 \*****************************************/
 /*
     Schema:
+
     - Work:
-        - id: string
-        - title: string
-        - description: string
-        - hours: number
-        - minionId: string
+    - id: string
+    - title: string
+    - description: string
+    - hours: number
+    - minionId: string
 
     Routes required:
     - GET /api/minions/:minionId/work to get an array of all work for the specified minon.
@@ -100,16 +86,6 @@ minionsRouter.delete("/:minionId", (req, res, next) => {
     - PUT /api/minions/:minionId/work/:workId to update a single work by id.
     - DELETE /api/minions/:minionId/work/:workId to delete a single work by id.
 */
-
-minionsRouter.param("workId", (req, res, next, id) => {
-    let work = getFromDatabaseById("work", id);
-    if (work) {
-        req.work = work;
-        next();
-    } else {
-        return res.status(404).send("Work not found");
-    }
-});
 
 minionsRouter.get("/:minionId/work", (req, res, next) => {
     let allWork = getAllFromDatabase("work");
@@ -120,38 +96,7 @@ minionsRouter.get("/:minionId/work", (req, res, next) => {
     if (minionsWork) {
         res.status(200).send(minionsWork);
     } else {
-        res.status(404).send("Problem finding minion's work");
-    }
-});
-
-minionsRouter.post("/:minionId/work", (req, res, next) => {
-    let newWork = req.body;
-    newWork.minionId = req.params.minionId;
-    let addedWork = addToDatabase("work", newWork);
-    res.status(201).send(addedWork);
-});
-
-minionsRouter.put("/:minionId/work/:workId", (req, res, next) => {
-    if (req.params.minionId !== req.body.minionId) {
-        return res.sendStatus(400);
-    }
-
-    let updatedWork = { ...req.work, ...req.body };
-    let updatedWorkInstance = updateInstanceInDatabase("work", updatedWork);
-
-    if (updatedWorkInstance) {
-        res.send(updatedWorkInstance);
-    } else {
-        return res.status(400).send("Problem updating minion's work");
-    }
-});
-
-minionsRouter.delete("/:minionId/work/:workId", (req, res, next) => {
-    let deleted = deleteFromDatabasebyId("work", req.work.id);
-    if (deleted) {
-        res.sendStatus(204);
-    } else {
-        return res.status(500).send("Error while deleting work");
+        res.sendStatus(404);
     }
 });
 
