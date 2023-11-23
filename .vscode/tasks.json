@@ -1,0 +1,41 @@
+{
+    "tasks": [
+        {
+            "type": "npm",
+            "script": "webpack -w",
+            "problemMatcher": [],
+            "label": "npm: webpack",
+            "detail": "run webpack -w",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "type": "npm",
+            "script": "nodemon --watch server.js --watch server/",
+            "problemMatcher": [],
+            "label": "npm: nodemon",
+            "detail": "run nodemon --watch server.js --watch server/",
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            }
+        }
+        {
+            "type": "npm",
+            "script": "start",
+            "problemMatcher": [],
+            "label": "npm: start",
+            "detail": "nodemon --watch server.js --watch server/"
+        },
+        {
+            "type": "npm",
+            "script": "test",
+            "group": "test",
+            "problemMatcher": [],
+            "label": "npm: test",
+            "detail": "cross-env PORT=8000 mocha --watch"
+        }
+    ]
+}
